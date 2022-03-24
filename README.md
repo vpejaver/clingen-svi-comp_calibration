@@ -35,6 +35,10 @@ This directory contains the actual implementation of the algorithm to calculate 
 #### 2. `results_postprocessing`
 
 This directory contains scripts to post-process outputs from `local_posterior_probability` and/or generate additional statistics and tables for the results.
+* `make_thr_table.m` : script to generate and systematically print out the score thresholds in Table 2 (and Supplemental Table S1). Note that the format is not exactly as in the paper but it should be easy to update manually to align with the format in the paper.
+* `assess_default_thresholds.m` : script to generate Table 3.
+* `calculate_coverage.m` : script to generate Supplemental Table S2.
+
 
 #### 3. `plotting`
 
