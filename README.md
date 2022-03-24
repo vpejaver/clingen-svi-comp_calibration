@@ -29,14 +29,14 @@ The repository is organized as follows:
 
 #### 1. `local_posterior_probability`
 
-This directory contains the actual implementation of the algorithm to calculate local posterior probabilities (as described in Figure 2 of the paper). 
+This directory contains the actual implementation of the algorithm to calculate local posterior probabilities (as described in Figure 2 of the paper). The script `main.m` serves as the wrapper that calls all the other functions in this directory.
 
 
-#### 2. results_postprocessing
+#### 2. `results_postprocessing`
 
 This directory contains scripts to post-process outputs from `local_posterior_probability` and/or generate additional statistics and tables for the results.
 
-#### 3. plotting
+#### 3. `plotting`
 
 This directory contains the code used to make the plots in the paper.
 
