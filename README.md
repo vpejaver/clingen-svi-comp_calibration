@@ -39,7 +39,7 @@ This directory contains scripts to post-process outputs from `local_posterior_pr
 #### 3. `plotting`
 
 This directory contains the code used to make the plots in the paper.
-* `plot_posterior_wrapper.m` : wrapper script to plot Figure 3. This script calls the function `plot_both_posteriors_pub.m`, which generates each individual local posterior probability plot, i.e., `plot_both_posteriors_pub.m` is called 26 times for each of the 26 subplots inside Figure 3.
+* `plot_posterior_wrapper.m` : wrapper script to plot Figure 3. This script calls the function `plot_both_posteriors_pub.m`, which generates each individual local posterior probability plot, i.e., the function is called 26 times for each of the 26 subplots inside Figure 3.
 * `plot_both_posterior_pub.m` : function to plot a single publication-quality local posterior probability plot. Note that this more or less does the same thing that `plot_both_posteriors.m` in `local_posterior_probability` does but the resulting plot matches the look and feel of the ones in the paper. It is recommended that this function be used to visualize finalized results.
 * `plot_heatmap_lr_testset.m` : script to plot the heatmap summarizing interval-based likelihood ratios on the validation set (Figure 4A).
 * `plot_heatmap_gnomad_set.m` : script to plot the heatmap summarizing the fraction of gnomAD variants falling within each score interval (Figure 4B).
