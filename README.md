@@ -18,6 +18,7 @@ The repository is organized as follows:
 │   └── print_thresholds.m
 ├── plotting
 │   ├── plot_both_posteriors_pub.m
+│   ├── plot_correlation.m
 │   ├── plot_heatmap_gnomad_set.m
 │   ├── plot_heatmap_lr_testset.m
 │   └── plot_posterior_wrapper.m
@@ -49,3 +50,4 @@ This directory contains the code used to make the plots in the paper.
 * `plot_both_posterior_pub.m` : function to plot a single publication-quality local posterior probability plot. Note that this more or less does the same thing that `plot_both_posteriors.m` in `local_posterior_probability` does but the resulting plot matches the look and feel of the ones in the paper. It is recommended that this function be used to visualize finalized results.
 * `plot_heatmap_lr_testset.m` : script to plot the heatmap summarizing interval-based likelihood ratios on the validation set (Figure 4A).
 * `plot_heatmap_gnomad_set.m` : script to plot the heatmap summarizing the fraction of gnomAD variants falling within each score interval (Figure 4B).
+* `plot_correlation.m` : script to plot correlation heatmap (Supplemental Figure S1).
