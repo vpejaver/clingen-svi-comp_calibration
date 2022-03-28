@@ -1,19 +1,31 @@
+%% Predrag Radivojac and Vikas Pejaver
+% Northeastern University, Icahn School of Medicine at Mount Sinai and
+% Univerity of Washington
+% 2021-2022
+
+%% Wrapper script to compute local posterior probabilities, 
+%% plot rough versions of posterior probability plots, and 
+%% estimate thresholds (full and bootstrapped)
+% Input files: For each tool, the ClinVar 2019 P/LP+B/LB variants and 
+%              gnomAD variants. Files located in 
+%              'data -> data_combined_tools_split'
+% Output file: A single MAT file for all 13 tools (or however many are
+%              looped through below) containing all variables in this 
+%              wrapper script. Files located in 'results -> bootstrapped'
+ 
+%% Initialize
+% clear screen and any standing variables in MATLAB workspace
 clear
 clc
 
+% randomize seed for bootstrapping
 rng('shuffle');
 
-%%
-%filetoload = 'final_1000_mbp_3prct_100pts_sift_fathmm_vest_revel_bd';
-%filetosave = 'final_10_3prct_100pts_sft_ftm_vst_rvl_bdl_mp2';
-
+%% Output file name
 filetosave = 'cadd_primateai_10k_3prct_100pts';
 
-%eval(['load ' filetoload]);
-
 %% Parallel thread setup
-
-% invokes parfor when true, otherwise te code is not parallelized
+% invokes parfor when true, otherwise the code is not parallelized
 global to_parallelize;
 to_parallelize = true;
 
@@ -38,28 +50,19 @@ end
 
 
 %% Files and tool names
-files = {...
-    'BayesDel_nsfp33a_noAF_PLP_BLB_predictions.txt', 'BayesDel_nsfp33a_wiAF_PLP_BLB_predictions.txt', ...
-    'CADD_raw_PLP_BLB_predictions.txt', 'EA_1.0_PLP_BLB_predictions.txt', ...
-    'hEAt_1.0_PLP_BLB_predictions.txt', 'hEAt_2.0_PLP_BLB_predictions.txt', ...
-    'MutPred_score_PLP_BLB_predictions.txt', 'MutPred2.0_score_PLP_BLB_predictions.txt', ...
-    'pph2_prob_PLP_BLB_predictions.txt', 'REVEL_score_PLP_BLB_predictions.txt', ...
-    'VEST4_score_PLP_BLB_predictions.txt', 'GERP++_RS_PLP_BLB_predictions.txt', ...
-    'phastCons100way_vertebrate_PLP_BLB_predictions.txt', 'phyloP100way_vertebrate_PLP_BLB_predictions.txt', ...
+indir = '/Users/vikaspejaver/Desktop/ClinGen-SVI/data/data_combined_tools_split/'; % change as needed
+files = {'BayesDel_nsfp33a_noAF_PLP_BLB_predictions.txt', 'EA_1.0_PLP_BLB_predictions.txt', ...
+    'MutPred2.0_score_PLP_BLB_predictions.txt', 'pph2_prob_PLP_BLB_predictions.txt', ...
+    'REVEL_score_PLP_BLB_predictions.txt', 'VEST4_score_PLP_BLB_predictions.txt', ...
+    'GERP++_RS_PLP_BLB_predictions.txt', 'phyloP100way_vertebrate_PLP_BLB_predictions.txt', ...
     'SIFT_score_PLP_BLB_predictions.txt', 'FATHMM_score_PLP_BLB_predictions.txt', ...
     'CADDv1.6_PHRED_PLP_BLB_predictions.txt', 'MPC_score_PLP_BLB_predictions.txt', ...
     'PrimateAI_score_PLP_BLB_predictions.txt'};
 
-methods = {'BayesDel-noAF', 'BayesDel-wiAF', ...
-    'CADDraw', 'EA1.0', ...
-    'hEAt1.0', 'hEAt2.0', ...
-    'MutPred', 'MutPred2.0', ...
-    'PolyPhen2-HVAR', 'REVEL', ...
-    'VEST4', 'GERP++', ...
-    'phastCons100way', 'phyloP100way'...
-    'SIFT', 'FATHMM', ...
-    'CADDphred', 'MPC', ...
-    'PrimateAI'};
+methods = {'BayesDel-noAF', 'EA1.0', 'MutPred2.0', ...
+    'PolyPhen2-HVAR', 'REVEL', 'VEST4', 'GERP++', ...
+    'phyloP100way', 'SIFT', 'FATHMM', 'CADDphred', ...
+    'MPC', 'PrimateAI'};
 
 
 %% Tuneable parameters
@@ -125,28 +128,18 @@ for j = 1 : 4
 end
 
 
-%% Run code
-%for i = 1 : length(files)
-for i = [17, 19] % [14, 18]
-%for i = [19]
-    if ispc()
-        D = load(['C:\Users\Predrag Radivojac\iCloudDrive\ClinGen\New Predictions\' files{i}]);
-    else
-        D = load(['/Users/vikaspejaver/Desktop/ClinGen-SVI/data/new_predictions_for_pedja/' files{i}]);
-    end
-    
+%% Loop through and estimate intervals
+for i = 1 : length(files) % does all 13 tools but change as needed
+    % read in ClinVar variants
+    D = load([indir files{i}]);
     fprintf(1, '\n%s', files{i});
     fprintf(1, '\n');
-    
+   
     x = D(:, 1);
     y = D(:, 2);
     
-    if ispc()
-        file = strrep(['C:\Users\Predrag Radivojac\iCloudDrive\ClinGen\New Predictions\' files{i}], 'BLB', 'U');
-    else
-        file = strrep(['/Users/vikaspejaver/Desktop/ClinGen-SVI/data/new_predictions_for_pedja/' files{i}], 'BLB', 'U');
-    end
-    
+    % read in gnomAD variants
+    file = strrep([indir files{i}], 'BLB', 'U');
     D = load(file);
     g = D(D(:, 2) == 0, 1);
     
@@ -171,7 +164,7 @@ for i = [17, 19] % [14, 18]
     % first row corresponds to original data
     posteriors_p{i}(1, :) = ...
         get_both_local_posteriors(x, y, g, thrs, w, ...
-        windowclinvarpoints, windowgnomadfraction, increments(i)); %#ok<*SAGROW>
+        windowclinvarpoints, windowgnomadfraction, increments(i)); 
     toc
     
     % benign posteriors are 1 - pathogenic posteriors, then reverse ordered
@@ -200,7 +193,7 @@ for i = [17, 19] % [14, 18]
     ThresholdP{i} = pthresh{i}(1, :);
     ThresholdB{i} = bthresh{i}(1, :);
     
-    % obtain discounted thresholds (pathogenic, benign)
+    % obtain discounted (one-sided confidence bound-based) thresholds (pathogenic, benign)
     DiscountedThresholdP{i} = ...
         get_discounted_thresholds(pthresh{i}(2 : B + 1, :), Post_p, B, discountonesided, 'pathogenic');
     DiscountedThresholdB{i} = ...
