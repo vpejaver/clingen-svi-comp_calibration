@@ -31,6 +31,8 @@ The repository is organized as follows:
 
 This directory contains the actual implementation of the algorithm to calculate local posterior probabilities (as described in Figure 2 of the paper). The script `main.m` serves as the wrapper that calls all the other functions in this directory.
 
+Note that `print_thresholds.m` and `plot_both_posteriors.m` functions are called in this wrapper mainly to present output immediately for testing and debugging purposes. More advanced, publication-ready versions of these functions can be found in the `plotting` and `results_postprocessing` directories.
+
 
 #### 2. `results_postprocessing`
 
