@@ -1,5 +1,22 @@
 function [postp, postb] = get_both_bootstrapped_posteriors (x, y, g, w, thrs, B, minpoints, gft, increment)
 
+%% Function that calculates local posterior probabilities using a 
+%% sliding window approach but on bootstrapped samples
+% Note: this function essentially calls get_both_local_posteriors.m 'B' times
+
+% x = scores on ClinVar from a prediction algorithm
+% y = class labels on ClinVar, corresponding to scores x
+% g = scores from gnomAD data
+% w = weight of one negative data point
+% thrs = thresholds to be examined
+% B = number of bootstrap samples
+% minpoints = min ClinVar points
+% gft = gnomAD frequency threshold
+% increment = by how much the halfwindow increases in each step
+% postp = pathogenic posterior
+% postb = benign posterior
+
+% initialize
 global to_parallelize;
 global to_printout;
 

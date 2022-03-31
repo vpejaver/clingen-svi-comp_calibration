@@ -1,5 +1,7 @@
 function [post, finalwindow] = get_both_local_posteriors (x, y, g, thrs, w, minpoints, gft, increment)
 
+%% Function that actually calculates local posterior probabilities using a 
+%% sliding window approach
 % x = scores on ClinVar from a prediction algorithm
 % y = class labels on ClinVar, corresponding to scores x
 % g = scores from gnomAD data
@@ -7,11 +9,11 @@ function [post, finalwindow] = get_both_local_posteriors (x, y, g, thrs, w, minp
 % w = weight of one negative data point
 % minpoints = min ClinVar points
 % gft = gnomAD frequency threshold
-% method = method name
+% increment = by how much the halfwindow increases in each step
 % post = posterior
 % finalwindow = returns final halfwindow size for debugging purposes
-% increment = by how much the halfwindow increases in each step
 
+% Initialize
 post = zeros(1, length(thrs));         % posterior for pathogenicity
 finalwindow = zeros(1, length(thrs));  % final window size for each threshold
 
@@ -19,6 +21,7 @@ maxthrs = max(thrs);
 minthrs = min(thrs);
 lengthgnomad = length(g);
 
+% Loop through each unique threshold
 for i = 1 : length(thrs)
     % half window initially takes a 0 value as some predictors can have a 
     % lot of variants with identical scores

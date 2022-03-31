@@ -1,6 +1,15 @@
 function [] = print_thresholds (tp, tb, dtp, dtb)
 
+%% Function to print thresholds
+% Note: better version of this table can be generated using make_thr_table.m
+% in the 'results_preprocessing' directory
 
+% tp = threshold for pathogenicity (point estimate)
+% tb = threshold for benignity (point estimate)
+% dtp = threshold for pathogenicity (confidence bound)
+% dtb = threshold for benignity (confidence bound)
+
+% print formatted output
 fprintf(1, '\n\nBenign\n');
 for i = 1 : size(tb, 2)
     if i == 1

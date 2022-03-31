@@ -1,7 +1,17 @@
 function [] = plot_both_posteriors (postp, postb, thrs, Postp, Postb, method)
 
-% pathogenic
+%% Function to plot local posterior probabilities
+% Note: better version of plots can be generated using the relevant
+% function in the 'plotting' directory
 
+% postp = posterior for pathogenicity
+% postb = posterior for benignity
+% thrs = thresholds to be examined
+% Postp = pathogenic posterior probability thresholds corresponding to the 4 strengths
+% Postb = benign posterior probability thresholds
+% method = method name
+
+% pathogenic
 subplot(2, 1, 1);
 
 % make a plot
@@ -17,8 +27,8 @@ title(['Pathogenic: ' method]);
 xlabel('Score')
 ylabel('Posterior');
 
-% benign
 
+% benign
 subplot(2, 1, 2)
 
 thrs = thrs(length(thrs) : -1 : 1);
