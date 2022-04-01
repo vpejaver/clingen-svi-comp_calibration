@@ -1,19 +1,28 @@
-% Vikas Pejaver and Pedja Radivojac
-% December 2020
-% University of Washington and Northeastern University
-% Script to select thresholds based on posteriors and bootstrapped data
+%% Vikas Pejaver
+% Icahn School of Medicine at Mount Sinai and Univerity of Washington
+% 2021-2022
 
+%% Wrapper script to extract threshold information and print formatted 
+%% output (Table 2 and Supplemental Table S1 in the paper)
+% Input files: Path to MAT files output by main.m in 
+%              'local_posterior_probability' with the filename regular 
+%              expression (see below). Files located in
+%              'results -> bootstrapped'
+% Output file: A tab-delimited TXT file containing thresholds formatted to 
+%              look as close to these two tables in the paper
+
+%% Initialize
+% clear screen and any standing variables in MATLAB workspace
 clear
 clc
 
 %% Constants and defaults
 infiles = '/Users/vikaspejaver/Desktop/ClinGen-SVI/results/new_bootstrapping/1pc/final_10k_1prct_100pts*.mat';
 out_file = 'new_thresholds_dcprior_nosmooth_bootstrap10000_1pc_posterior_output.txt';
-choice = 'discounted'; % Either actual, mean, or discounted 
+choice = 'discounted'; % Either actual, mean, or discounted (only actual and discounted used in the paper)
 toolnames = {'BayesDel-noAF', 'CADDphred', 'EA1.0', 'FATHMM', 'GERP++', 'MPC', 'MutPred2.0', 'phyloP100way', 'PolyPhen2-HVAR', 'PrimateAI', 'REVEL', 'SIFT', 'VEST4'};
 
 %% Open output file
-%oid = 1;
 oid = fopen([choice, '_', out_file], 'w');
 if oid == -1
     error('ERROR: cannot open output file!');
@@ -21,33 +30,30 @@ end
 
 %% Loop through each MAT file and get information
 thresholds = [];
-%post_point = [];
-%post_lower = [];
-%post_upper = [];
 tools = {};
 
 filenames = strcat({dir(infiles).folder}, '/', {dir(infiles).name})';
 for n = 1:length(filenames)
     n
-    % Load MAT file
+    % load MAT file
     load(filenames{n});
 
-    % Get indices of the methods that were done
+    % get indices of the methods that were done (this was used only for
+    % development purposes when results were partially done)
     idx = find(~cellfun(@isempty, ThresholdP));
 
-    % Put thresholds together
+    % put thresholds together
     for i = idx
         if strcmp(choice, 'mean')
-	    thresholds = [thresholds; [nanmean(pthresh{i}(2:end, :)) nanmean(bthresh{i}(2:end, :))]];
-	elseif strcmp(choice, 'actual')
-	    thresholds = [thresholds; [ThresholdP{i} ThresholdB{i}]];
-	else
-	    thresholds = [thresholds; [DiscountedThresholdP{i} DiscountedThresholdB{i}]];    
-	end
-	tools = [tools; methods{i}];
-    end	
+    	    thresholds = [thresholds; [nanmean(pthresh{i}(2:end, :)) nanmean(bthresh{i}(2:end, :))]];
+    	elseif strcmp(choice, 'actual')
+    	    thresholds = [thresholds; [ThresholdP{i} ThresholdB{i}]];
+    	else
+    	    thresholds = [thresholds; [DiscountedThresholdP{i} DiscountedThresholdB{i}]];
+    	end
+    	tools = [tools; methods{i}];
+    end
 end
-%return
 
 %% Reorder
 [~, ordr] = ismember(toolnames, tools);
