@@ -1,6 +1,6 @@
 ## Code to calibrate tools for clinical interpretation and generate summarized results
 
-This repository contains only the **code** relevant to the paper. Due to large file sizes, data and intermediate result files are hosted [here](https://mountsinai.box.com/s/x9nlvdxaqgznfy6sn7fo3je4qz99huc8). Please refer to the README at this link for information on the data files.
+This repository contains only the **code** relevant to the paper. Due to large file sizes, data and intermediate result files are hosted [here](https://mountsinai.box.com/s/x9nlvdxaqgznfy6sn7fo3je4qz99huc8). Each of the files (`data.zip` and `results.zip`) contains a README that provides additional information on the data and results. Please refer to these and link the relevant files to the code provided in this repository so that the scripts and functions access the correct input files.
 
 ### Repository structure
 
