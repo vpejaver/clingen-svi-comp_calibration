@@ -135,6 +135,10 @@ toolnames = strrep(toolnames, 'BayesDel-noAF', 'BayesDel');
 toolnames = strrep(toolnames, 'MutPred2.0', 'MutPred2');
 toolnames = strrep(toolnames, 'phyloP100way', 'PhyloP');
 
+% Added a 'flip' to match edits in the revised version of the paper
+proportions = fliplr(proportions);
+xlabels = fliplr(xlabels);
+
 % Plot heatmap
 f = figure('units','normalized','outerposition',[0 0 1 1])
 P = uipanel('Parent',f,'BorderType','none');
@@ -143,12 +147,12 @@ P = uipanel('Parent',f,'BorderType','none');
 %p.FontSize = 20;
 %p.FontWeight = 'bold';
 
-% [0.64, 0.08, 0.18]
+% [0.00, 0.45, 0.74]
 p(1) = subplot(1, 3, 1, 'Parent', P);
-cmap = colormap(p(1), [linspace(1, 0.64)' linspace(1, 0.08)' linspace(1, 0.18)']);
+cmap = colormap(p(1), [linspace(1, 0)' linspace(1, 0.45)' linspace(1, 0.74)']);
 tmp = proportions(:, 1:idx-1);
 %tmp(:, 6:9) = -tmp(:, 6:9);
-h = heatmap(xlabels(1:idx-1), toolnames, tmp, 'FontSize', 20, 'FontName', 'Arial'); %proportions);
+h = heatmap(xlabels(1:idx-1), toolnames, tmp, 'FontSize', 40, 'FontName', 'Arial'); %proportions);
 h.CellLabelFormat = strrep('%.2f', '-', '');
 h.ColorLimits = [0, 75];
 h.Colormap = cmap;
@@ -164,7 +168,7 @@ p(2) = subplot(1, 3, 2, 'Parent', P);
 cmap = colormap(p(2), repmat(linspace(1, 0.5)', 1, 3));
 tmp = proportions(:, idx);
 %tmp(:, 6:9) = -tmp(:, 6:9);
-h = heatmap(xlabels(idx), toolnames, tmp, 'FontSize', 20, 'FontName', 'Arial'); %proportions);
+h = heatmap(xlabels(idx), toolnames, tmp, 'FontSize', 40, 'FontName', 'Arial'); %proportions);
 %h.Title = 'Proportion of gnomAD variants in interval (%)';
 h.CellLabelFormat = strrep('%.2f', '-', '');
 h.YDisplayLabels = repmat({''}, length(toolnames), 1);
@@ -176,16 +180,16 @@ pos = get(gca, 'Position');
 pos = [pos(1) pos(2)+0.03 pos(3)-0.16 pos(4)]
 set(gca, 'Position', pos);
 
-% [0, 0.45, 0.74]
+% [0.64, 0.08, 0.18]
 p(3) = subplot(1, 3, 3, 'Parent', P);
-cmap3 = colormap(p(3), [linspace(1, 0)' linspace(1, 0.45)' linspace(1, 0.74)']);
+cmap = colormap(p(3), [linspace(1, 0.64)' linspace(1, 0.08)' linspace(1, 0.18)']);
 tmp = proportions(:, idx+1:end);
 %tmp(:, 6:9) = -tmp(:, 6:9);
-h = heatmap(xlabels(idx+1:end), toolnames, tmp, 'FontSize', 20, 'FontName', 'Arial'); %proportions);
+h = heatmap(xlabels(idx+1:end), toolnames, tmp, 'FontSize', 40, 'FontName', 'Arial'); %proportions);
 h.CellLabelFormat = strrep('%.2f', '-', '');
 h.YDisplayLabels = repmat({''}, length(toolnames), 1);
 h.ColorLimits = [0, 75];
-%h.Colormap = cmap;
+h.Colormap = cmap;
 h.MissingDataColor = [1, 1, 1];
 colorbar off;
 %set(gca, 'FontSize', 20);
@@ -194,7 +198,7 @@ pos = [pos(1)-0.225 pos(2)+0.03 pos(3:4)]
 set(gca, 'Position', pos);
 
 % Save plot
-exportgraphics(P, out_file, 'Resolution', 1000);
+exportgraphics(P, out_file, 'Resolution', 300);
 %set(0,'DefaultFigureColor', [1 1 1]);
 
 %eval(['print -dpng ' out_file]);

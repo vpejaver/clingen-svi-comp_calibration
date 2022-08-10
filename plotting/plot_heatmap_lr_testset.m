@@ -29,7 +29,6 @@ columns = {'BayesDel_nsfp33a_noAF', '', 'CADDv10x2E6_PHRED', 'EA_10x2E0', '', ''
 %xlabels = {'>= PP3_VeryStrong', '[PP3_Strong, PP3_VeryStrong)', '[PP3_Moderate, PP3_Strong)', '[PP3_Supporting, PP3_Moderate)', 'Indet.', '[BP4_Moderate, BP4_Supporting)', '[BP4_Strong, BP4_Moderate)', '[BP4_VeryStrong, BP4_Strong)', '< BP4_VeryStrong', 'Not pred.'};
 xlabels = {'PP3\_VeryStrong', 'PP3\_Strong', 'PP3\_Moderate', 'PP3\_Supporting', 'BP4\_Supporting', 'BP4\_Moderate', 'BP4\_Strong', 'BP4\_VeryStrong'};
 
-
 % Read in data file
 D = tdfread(in_file, '\t');
 
@@ -172,20 +171,24 @@ toolnames = strrep(toolnames, 'BayesDel-noAF', 'BayesDel');
 toolnames = strrep(toolnames, 'MutPred2.0', 'MutPred2');
 toolnames = strrep(toolnames, 'phyloP100way', 'PhyloP');
 
+% Added a 'flip' to match edits in the revised version of the paper
+lr = fliplr(lr);
+xlabels = fliplr(xlabels);
+
 % Plot heatmap
 f = figure('units', 'normalized', 'outerposition', [0 0 1 1])
 P = uipanel('Parent', f, 'BorderType', 'none');
 
-% [0.64, 0.08, 0.18]
+% [0.00, 0.45, 0.74]
 p(1) = subplot(1, 3, 1, 'Parent', P);
-cmap = colormap(p(1), [linspace(1, 0.64)' linspace(1, 0.08)' linspace(1, 0.18)']);
+cmap = flipud(colormap(p(1), [linspace(1, 0)' linspace(1, 0.45)' linspace(1, 0.74)']));
 tmp = lr(:, 1:cidx);
 tmp(all(isnan(lr), 2), :) = [];
 %tmp(:, 6:9) = -tmp(:, 6:9);
-h = heatmap(xlabels(1:cidx), toolnames, tmp, 'FontSize', 20, 'FontName', 'Arial'); %proportions);
+h = heatmap(xlabels(1:cidx), toolnames, tmp, 'FontSize', 40, 'FontName', 'Arial'); %proportions);
 %h.Title = 'Likelihood ratio (odds of pathogenicity) in interval';
 h.CellLabelFormat = strrep('%.2f', '-', '');
-h.ColorLimits = [1, 100];
+h.ColorLimits = [0, 1];
 h.Colormap = cmap;
 h.MissingDataColor = [1, 1, 1];
 colorbar off;
@@ -198,7 +201,7 @@ set(gca, 'Position', pos);
 % [0.5, 0.5, 0.5]
 p(2) = subplot(1, 3, 2, 'Parent', P);
 cmap = colormap(p(2), repmat(linspace(1, 0.5)', 1, 3));
-h = heatmap(repmat(0.5, length(toolnames), 1), 'CellLabelColor', 'none', 'GridVisible', 'off', 'FontSize', 20, 'FontName', 'Arial');
+h = heatmap(repmat(0.5, length(toolnames), 1), 'CellLabelColor', 'none', 'GridVisible', 'off', 'FontSize', 40, 'FontName', 'Arial');
 h.XDisplayLabels = '';
 h.YDisplayLabels = repmat({''}, length(toolnames), 1);
 h.ColorLimits = [0, 1];
@@ -218,16 +221,16 @@ pos = get(gca, 'Position');
 pos = [pos(1) pos(2)+0.03 pos(3)-0.16 pos(4)]
 set(gca, 'Position', pos);
 
-% [0, 0.45, 0.74]
+% [0.64, 0.08, 0.18]
 p(3) = subplot(1, 3, 3, 'Parent', P);
-cmap = flipud(colormap(p(3), [linspace(1, 0)' linspace(1, 0.45)' linspace(1, 0.74)']));
+cmap = colormap(p(3), [linspace(1, 0.64)' linspace(1, 0.08)' linspace(1, 0.18)']);
 tmp = lr(:, cidx+1:end);
 tmp(all(isnan(lr), 2), :) = [];
 %tmp(:, 6:9) = -tmp(:, 6:9);
-h = heatmap(xlabels(cidx+1:end), toolnames, tmp, 'FontSize', 20, 'FontName', 'Arial'); %proportions);
+h = heatmap(xlabels(cidx+1:end), toolnames, tmp, 'FontSize', 40, 'FontName', 'Arial'); %proportions);
 h.CellLabelFormat = strrep('%.2f', '-', '');
 h.YDisplayLabels = repmat({''}, length(toolnames), 1);
-h.ColorLimits = [0, 1];
+h.ColorLimits = [1, 100];
 h.Colormap = cmap;
 h.MissingDataColor = [1, 1, 1];
 colorbar off;
@@ -238,7 +241,7 @@ pos = [pos(1)-0.225 pos(2)+0.03 pos(3:4)]
 set(gca, 'Position', pos);
 
 % Save plot
-exportgraphics(P, out_file, 'Resolution', 1000);
+exportgraphics(P, out_file, 'Resolution', 450);
 %set(0,'DefaultFigureColor', [1 1 1]);
 %set(gcf, 'Color', 'None');
 
